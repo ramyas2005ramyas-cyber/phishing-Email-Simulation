@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Training Results History</title>
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<header>
+    <h1>Training Results History</h1>
+    <p>Previously recorded training sessions</p>
+</header>
+
+<main>
+    <section class="dashboard">
+        <h2>Saved Sessions</h2>
+
+        {% if training_sessions %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Session</th>
+                    <th>Started</th>
+                    <th>Completed</th>
+                    <th>Score</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in training_sessions %}
+                <tr>
+                    <td>{{ item.id }}</td>
+                    <td>{{ item.started_at }}</td>
+                    <td>{{ item.completed_at or "In progress" }}</td>
+                    <td>{{ item.correct_answers }} / {{ item.total_scenarios }}</td>
+                    <td>
+                        {{ "Completed" if item.completed else "In progress" }}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>No training sessions have been saved yet.</p>
+        {% endif %}
+
+        <p><a href="{{ url_for('home') }}">Back to Dashboard</a></p>
+        <p><a href="{{ url_for('analysis') }}">View Awareness Analysis</a></p>
+    </section>
+</main>
+
+<footer>Educational simulation only.</footer>
+
+</body>
+</html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Training Feedback</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<header>
+    <h1>Training Feedback</h1>
+    <p>Phishing Email Awareness Assessment</p>
+</header>
+
+<main>
+    <section class="email-card">
+
+        {% if correct %}
+            <h2 style="color: green;">Correct Answer!</h2>
+            <p>You correctly classified this email.</p>
+        {% else %}
+            <h2 style="color: red;">Incorrect Answer</h2>
+            <p>Review the explanation below to understand the warning signs.</p>
+        {% endif %}
+
+        <hr>
+
+        <p>
+            <strong>Email Subject:</strong>
+            {{ email.subject }}
+        </p>
+
+        <p>
+            <strong>Your Selected Option:</strong>
+            {% if choice == "phishing" %}
+                Report as suspicious
+            {% else %}
+                Mark as legitimate
+            {% endif %}
+        </p>
+
+        <p>
+            <strong>Correct Classification:</strong>
+            {% if email.answer == "phishing" %}
+                Phishing
+            {% else %}
+                Legitimate
+            {% endif %}
+        </p>
+
+        <p>
+            <strong>Explanation:</strong>
+            {{ email.reason }}
+        </p>
+
+        <hr>
+
+        <h3>Your Progress</h3>
+
+        <p>
+            Correct answers: {{ score }} / {{ total }}
+        </p>
+
+        <p>
+            Accuracy:
+            {{ ((score / total) * 100)|round|int }}%
+        </p>
+
+        <a href="{{ url_for('home') }}">Return to Dashboard</a>
+
+    </section>
+</main>
+
+<footer>
+    Educational simulation only.
+</footer>
+
+</body>
+</html>

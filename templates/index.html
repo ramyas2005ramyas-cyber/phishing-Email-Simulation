@@ -1,0 +1,141 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Phishing Email Simulation</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<header>
+    <h1>Phishing Email Simulation</h1>
+    <p>Cybersecurity Awareness Training Platform</p>
+</header>
+
+<main>
+
+    <!-- Training Dashboard -->
+    <section class="dashboard">
+        <h2>Training Dashboard</h2>
+
+        <p>Completed scenarios: {{ answered|length }} / {{ emails|length }}</p>
+
+        <div class="progress-container">
+            <div class="progress-bar"
+                 style="width: {{ (answered|length / emails|length * 100)|round|int }}%;">
+            </div>
+        </div>
+
+        <p>Progress: {{ (answered|length / emails|length * 100)|round|int }}% completed</p>
+        <p>Correct answers: {{ score }} / {{ emails|length }}</p>
+        <p>Accuracy: {{ ((score / emails|length) * 100)|round|int }}%</p>
+
+        {% if answered|length == emails|length %}
+            <h3>Training completed!</h3>
+            <p>You have finished all training scenarios.</p>
+            <p>Final accuracy: {{ ((score / emails|length) * 100)|round|int }}%</p>
+
+            <hr>
+            <h3>Phishing Awareness Assessment</h3>
+
+            {% if incorrect %}
+                <p>You need more practice with {{ incorrect|length }} scenario(s).</p>
+
+                <ul>
+                    {% for email in emails %}
+                        {% if email.id in incorrect %}
+                            <li>
+                                <strong>{{ email.subject }}</strong>
+                                <p>{{ email.reason }}</p>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+
+                <p>
+                    <strong>Safety tip:</strong>
+                    Check the sender, links, urgency, unexpected rewards,
+                    and requests for sensitive information before trusting an email.
+                </p>
+            {% else %}
+                <p>Excellent work! You classified every scenario correctly.</p>
+                <p>Continue checking email senders, links, and requests for sensitive information.</p>
+            {% endif %}
+        {% else %}
+            <p>Examine each fictional email and select the appropriate classification.</p>
+        {% endif %}
+    </section>
+
+    <!-- Email Scenarios -->
+    {% for email in emails %}
+        <section class="email-card">
+            <h2>{{ email.subject }}</h2>
+
+            <p class="sender">
+                <strong>From:</strong> {{ email.sender }}
+            </p>
+
+            <p>{{ email.message }}</p>
+            <p><strong>Training scenario {{ email.id }}</strong></p>
+
+            {% if email.id in answered %}
+                <p><strong>Scenario completed.</strong></p>
+            {% else %}
+                <form method="POST"
+                      action="{{ url_for('answer', email_id=email.id) }}">
+
+                    <button class="phishing-button"
+                            type="submit"
+                            name="choice"
+                            value="phishing">
+                        Report as Suspicious
+                    </button>
+
+                    <button class="legitimate-button"
+                            type="submit"
+                            name="choice"
+                            value="legitimate">
+                        Mark as Legitimate
+                    </button>
+                </form>
+            {% endif %}
+        </section>
+    {% endfor %}
+
+    <!-- Restart Training -->
+    <section class="dashboard">
+        <h2>Training Controls</h2>
+        <p>Start a fresh training session whenever you are ready.</p>
+
+        <p>
+            <a href="{{ url_for('reset') }}">Restart Training</a>
+        </p>
+    </section>
+
+    <!-- Training Records and Analysis -->
+    <section class="dashboard">
+        <h2>Training Records &amp; Analysis</h2>
+        <p>Review previous sessions and phishing-awareness performance.</p>
+
+        <p>
+            <a href="{{ url_for('results') }}">View Saved Results</a>
+        </p>
+
+        <p>
+            <a href="{{ url_for('analysis') }}">View Awareness Analysis</a>
+        </p>
+    </section>
+
+</main>
+
+<footer>
+    Educational simulation only. No real credentials are collected.
+</footer>
+
+</body>
+</html>

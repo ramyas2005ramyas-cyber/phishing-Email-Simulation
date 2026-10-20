@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Phishing Awareness Analysis</title>
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<header>
+    <h1>Phishing Awareness Analysis</h1>
+    <p>Analysis of recorded training results</p>
+</header>
+
+<main>
+    <section class="dashboard">
+        <h2>Overall Statistics</h2>
+
+        <p>Total training sessions:
+            {{ summary.total_sessions or 0 }}
+        </p>
+
+        <p>Completed sessions:
+            {{ summary.completed_sessions or 0 }}
+        </p>
+
+        <p>Average accuracy:
+            {% if summary.average_accuracy is not none %}
+                {{ summary.average_accuracy|round|int }}%
+            {% else %}
+                Not available yet
+            {% endif %}
+        </p>
+    </section>
+
+    <section class="email-card">
+        <h2>Scenarios Most Often Answered Incorrectly</h2>
+
+        {% if mistake_summary %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Email Scenario</th>
+                    <th>Incorrect Answers</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in mistake_summary %}
+                <tr>
+                    <td>{{ item.subject }}</td>
+                    <td>{{ item.mistake_count }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>No incorrect answers have been recorded yet.</p>
+        {% endif %}
+
+        <p>
+            These results help identify scenarios that may need
+            additional phishing-awareness training.
+        </p>
+
+        <p><a href="{{ url_for('results') }}">View Saved Results</a></p>
+        <p><a href="{{ url_for('home') }}">Back to Dashboard</a></p>
+    </section>
+</main>
+
+<footer>Educational simulation only.</footer>
+
+</body>
+</html>
